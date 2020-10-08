@@ -1,17 +1,34 @@
-library(datasets)
-library(data.table)
-iris_dt <- as.data.table(iris)
+## Put comments here that give an overall description of what your
+## functions do
 
-# 1 There will be an object called 'iris' in your workspace. 
-# In this dataset, what is the mean of 'Sepal.Length' for the species virginica? Please round your answer to the nearest whole number.
+## Write a short comment describing this function
 
-# Basic data.table syntax below .
-#iris_dt[ essentially SQL Where class, select statement, groupby]
-iris_dt[Species == "virginica",round(mean(Sepal.Length)) ]
+makeCacheMatrix <- function(x = matrix()) {
+	inverse <- NULL
+	set <- function(y) {
+		x <<- y
+		m <<- NULL
+	}
+	get <- function() x
+	setinverse <- function(i) inverse <- i
+	getinverse <- function() inverse
+	list(set = set, get = get, setinverse = setinverse, getinverse = getinverse)
+}
 
-# 3 
-# what is the absolute difference between the average horsepower of 
-# 4-cylinder cars and the average horsepower of 8-cylinder cars? (interest whole number)
-mtcars_dt <- as.data.table(mtcars)
-mtcars_dt <- mtcars_dt[,  .(mean_cols = mean(hp)), by = cyl]
-round(abs(mtcars_dt[cyl == 4, mean_cols] - mtcars_dt[cyl == 8, mean_cols]))
+
+## Write a short comment describing this function
+
+cacheSolve <- function(x, ...) {
+        ## Return a matrix that is the inverse of 'x'
+        inverse <- x$getinverse()
+        if(!is.null(inverse)) {
+        	message("getting cached inverse")
+        	return(inverse)
+        }
+        data <- x$get()
+        inverse <- solve(data, ...)
+        x$setinverse(inverse)
+        inverse
+}
+
+# data <- matrix(c(1, 1, 4, 0, 3, 1, 4, 4, 0), nrow=3, ncol=3)
